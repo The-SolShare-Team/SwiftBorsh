@@ -1,0 +1,39 @@
+// swift-tools-version: 6.2
+
+import CompilerPluginSupport
+import PackageDescription
+
+let package = Package(
+    name: "SwiftBorsh",
+    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
+    products: [
+        .library(
+            name: "SwiftBorsh",
+            targets: ["SwiftBorsh"]
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0")
+    ],
+    targets: [
+        .macro(
+            name: "SwiftBorshMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ]
+        ),
+        .target(
+            name: "ByteBuffer"
+        ),
+        .target(
+            name: "SwiftBorsh",
+            dependencies: ["ByteBuffer", "SwiftBorshMacros"]
+        ),
+        .testTarget(
+            name: "SwiftBorshTests",
+            dependencies: ["SwiftBorsh"]
+        ),
+        .executableTarget(name: "Client", dependencies: ["SwiftBorsh"]),
+    ]
+)
