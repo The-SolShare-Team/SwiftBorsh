@@ -1,0 +1,1 @@
+This library includes macros for automatic conformance to BorshCodable. They ought to be considered experimental. Please report any types for which they do not generate correct implementations.

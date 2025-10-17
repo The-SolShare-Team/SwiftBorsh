@@ -1,0 +1,5 @@
+This project contains SwiftNIO's ByteBuffer.
+  * LICENSE (Apache-2.0):
+    * https://raw.githubusercontent.com/apple/swift-nio/86c5ead5ddaab0462b9831cca4c292ab42992d63/LICENSE.txt
+  * HOMEPAGE:
+    * https://github.com/apple/swift-nio
