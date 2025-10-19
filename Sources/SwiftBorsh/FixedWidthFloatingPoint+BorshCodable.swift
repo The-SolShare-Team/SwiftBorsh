@@ -12,7 +12,9 @@ extension BorshCodable where Self: FixedWithFloatingPoint {
     }
 }
 
-@available(macOS 11.0, *)
-extension Float16: BorshCodable {}
+#if arch(arm64)
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    extension Float16: BorshCodable {}
+#endif
 extension Float32: BorshCodable {}
 extension Float64: BorshCodable {}

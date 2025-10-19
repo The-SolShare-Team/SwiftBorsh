@@ -14,10 +14,12 @@ public enum BorshEncodingError: Error, CustomStringConvertible {
 
 public enum BorshDecodingError: Error, CustomStringConvertible {
     case EndOfBuffer
+    case InvalidValue
 
     public var description: String {
         switch self {
         case .EndOfBuffer: "Unexpected end of buffer"
+        case .InvalidValue: "Invalid value"
         }
     }
 }
