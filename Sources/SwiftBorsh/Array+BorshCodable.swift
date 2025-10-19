@@ -9,12 +9,10 @@ extension Array: BorshEncodable where Element: BorshEncodable {
 
 extension Array: BorshDecodable where Element: BorshDecodable {
     public init(fromBorshBuffer buffer: inout BorshByteBuffer) throws(BorshDecodingError) {
-        guard let count = buffer.readInteger(endianness: .little, as: UInt32.self) else {
-            throw BorshDecodingError.EndOfBuffer
-        }
+        let count = Int(try UInt32(fromBorshBuffer: &buffer))
         self.init()
-        self.reserveCapacity(Int(count))
-        for i in 0..<Int(count) {
+        self.reserveCapacity(count)
+        for i in 0..<count {
             self[i] = try Element(fromBorshBuffer: &buffer)
         }
     }

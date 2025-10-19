@@ -1,27 +1,79 @@
 import SwiftBorsh
 
-@BorshEncodable
 enum MyEnum {
     case A, B
-    case C(test: Int32, test2: Int64)
-    case D
+    case C(test: Int32, test2: Int64, test3: (Int64, Int64))
+    case D(Int32, test: Int64, (Int64, Int64))
 }
 
-var a: MyEnum
+extension MyEnum: BorshEncodable {
+    public func borshEncode(to buffer: inout BorshByteBuffer) throws(BorshEncodingError) {
+        switch self {
+        case .A:
+            try UInt8(0).borshEncode(to: &buffer)
+        case .B:
+            try UInt8(1).borshEncode(to: &buffer)
+        case .C(let p1, let p2, let (p3, p4)):
+            do {
+                try UInt8(2).borshEncode(to: &buffer)
+                try p1.borshEncode(to: &buffer)
+                try p2.borshEncode(to: &buffer)
+                try p3.borshEncode(to: &buffer)
+                try p4.borshEncode(to: &buffer)
+            }
+        case .D(let p1, let p2, let (p3, p4)):
+            do {
+                try UInt8(3).borshEncode(to: &buffer)
+                try p1.borshEncode(to: &buffer)
+                try p2.borshEncode(to: &buffer)
+                try p3.borshEncode(to: &buffer)
+                try p4.borshEncode(to: &buffer)
+            }
+        }
+    }
+}
 
-@BorshEncodable
+extension MyEnum: BorshDecodable {
+    init(fromBorshBuffer buffer: inout SwiftBorsh.BorshByteBuffer) throws(SwiftBorsh
+        .BorshDecodingError)
+    {
+        guard let variant = buffer.readInteger(endianness: .little, as: UInt8.self) else {
+            throw BorshDecodingError.EndOfBuffer
+        }
+        switch variant {
+        case 0: self = MyEnum.A
+        case 1: self = MyEnum.B
+        case 2:
+            self = MyEnum.C(
+                test: try Int32(fromBorshBuffer: &buffer),
+                test2: try Int64(fromBorshBuffer: &buffer),
+                test3: (try Int64(fromBorshBuffer: &buffer), try Int64(fromBorshBuffer: &buffer)))
+        case 3:
+            self = MyEnum.D(
+                try Int32(fromBorshBuffer: &buffer), test: try Int64(fromBorshBuffer: &buffer),
+                (try Int64(fromBorshBuffer: &buffer), try Int64(fromBorshBuffer: &buffer)))
+        default: throw BorshDecodingError.InvalidValue
+        }
+    }
+}
+
+// var a: MyEnum
+
+// @BorshEncodable
 // @BorshDecodable
 struct Person {
-    var name, name2: String
-    var (x, y): (Int, Int)
-    var position: (Int, Int)
+    // var name, name2: String
+    // var (x, y): (Int, Int)
+    // var position: (Int, Int)
     var age: Int32
     let score: Float
-    let kind: MyEnum
+    // let kind: MyEnum
 }
 
 // Handle tuple declaration, tuple types
 // Handle decoding
+// Enum use parameter names
+// Diagnostics field conformance to encodable
 
 print(try! BorshEncoder.encode("Hello World"))
 print(
