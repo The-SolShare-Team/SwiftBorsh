@@ -38,7 +38,7 @@ extension MyEnum: BorshDecodable {
         .BorshDecodingError)
     {
         guard let variant = buffer.readInteger(endianness: .little, as: UInt8.self) else {
-            throw BorshDecodingError.EndOfBuffer
+            throw BorshDecodingError.endOfBuffer
         }
         switch variant {
         case 0: self = MyEnum.A
@@ -52,7 +52,7 @@ extension MyEnum: BorshDecodable {
             self = MyEnum.D(
                 try Int32(fromBorshBuffer: &buffer), test: try Int64(fromBorshBuffer: &buffer),
                 (try Int64(fromBorshBuffer: &buffer), try Int64(fromBorshBuffer: &buffer)))
-        default: throw BorshDecodingError.InvalidValue
+        default: throw BorshDecodingError.invalidValue
         }
     }
 }

@@ -1,12 +1,12 @@
 extension BorshCodable where Self: FixedWithFloatingPoint {
     public func borshEncode(to buffer: inout BorshByteBuffer) throws(BorshEncodingError) {
-        if isNaN { throw BorshEncodingError.InvalidValue }
+        if isNaN { throw BorshEncodingError.invalidValue }
         buffer.writeInteger(self.bitPattern, endianness: .little)
     }
 
     public init(fromBorshBuffer buffer: inout BorshByteBuffer) throws(BorshDecodingError) {
         guard let bitPattern = buffer.readInteger(endianness: .little, as: BitPattern.self) else {
-            throw BorshDecodingError.EndOfBuffer
+            throw BorshDecodingError.endOfBuffer
         }
         self.init(bitPattern: bitPattern)
     }

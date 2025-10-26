@@ -5,7 +5,7 @@ extension BorshCodable where Self: FixedWidthInteger {
 
     public init(fromBorshBuffer buffer: inout BorshByteBuffer) throws(BorshDecodingError) {
         guard let int = buffer.readInteger(endianness: .little, as: Self.self) else {
-            throw BorshDecodingError.EndOfBuffer
+            throw BorshDecodingError.endOfBuffer
         }
         self = int
     }
