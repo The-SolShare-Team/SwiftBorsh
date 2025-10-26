@@ -30,7 +30,7 @@ let package = Package(
         .testTarget(name: "Base58Tests", dependencies: ["Base58"]),
         .target(
             name: "SwiftBorsh",
-            dependencies: ["ByteBuffer", "SwiftBorshMacros"]
+            dependencies: ["ByteBuffer", "SwiftBorshMacros", "Base58"]
         ),
         .testTarget(
             name: "SwiftBorshTests",
