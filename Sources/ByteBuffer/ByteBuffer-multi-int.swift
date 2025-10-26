@@ -5,8 +5,8 @@
 // Copyright (c) 2021 Apple Inc. and the SwiftNIO project authors
 // Licensed under Apache License v2.0
 //
-// See LICENSE.txt for license information
-// See CONTRIBUTORS.txt for the list of SwiftNIO project authors
+// See https://raw.githubusercontent.com/apple/swift-nio/86c5ead5ddaab0462b9831cca4c292ab42992d63/LICENSE.txt for license information
+// See https://raw.githubusercontent.com/apple/swift-nio/86c5ead5ddaab0462b9831cca4c292ab42992d63/CONTRIBUTORS.txt for the list of SwiftNIO project authors
 //
 // SPDX-License-Identifier: Apache-2.0
 //
