@@ -6,10 +6,10 @@ extension String: BorshCodable {
 
     public init(fromBorshBuffer buffer: inout BorshByteBuffer) throws(BorshDecodingError) {
         guard let count = buffer.readInteger(endianness: .little, as: UInt32.self) else {
-            throw BorshDecodingError.EndOfBuffer
+            throw BorshDecodingError.endOfBuffer
         }
         guard let str = buffer.readString(length: Int(count)) else {
-            throw BorshDecodingError.EndOfBuffer
+            throw BorshDecodingError.endOfBuffer
         }
         self = str
     }

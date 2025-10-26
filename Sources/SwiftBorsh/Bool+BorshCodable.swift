@@ -8,7 +8,7 @@ extension Bool: BorshCodable {
         switch int {
         case 0: self = false
         case 1: self = true
-        default: throw BorshDecodingError.InvalidValue
+        default: throw BorshDecodingError.invalidValue
         }
     }
 }

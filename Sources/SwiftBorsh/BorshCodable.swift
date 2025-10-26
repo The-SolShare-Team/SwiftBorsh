@@ -1,25 +1,23 @@
 public enum BorshEncodingError: Error, CustomStringConvertible {
-    case UnsupportedType(any Any.Type)
-    case InvalidValue
-    case EnumNotEnumerable(any Any.Type)
+    case unsupportedType(any Any.Type)
+    case invalidValue
 
     public var description: String {
         switch self {
-        case .UnsupportedType(let t): "Unsupported type \(t)"
-        case .InvalidValue: "Invalid value"
-        case .EnumNotEnumerable(let t): "Enum \(t) does not conform to CaseIterable"
+        case .unsupportedType(let t): "Unsupported type \(t)"
+        case .invalidValue: "Invalid value"
         }
     }
 }
 
 public enum BorshDecodingError: Error, CustomStringConvertible {
-    case EndOfBuffer
-    case InvalidValue
+    case endOfBuffer
+    case invalidValue
 
     public var description: String {
         switch self {
-        case .EndOfBuffer: "Unexpected end of buffer"
-        case .InvalidValue: "Invalid value"
+        case .endOfBuffer: "Unexpected end of buffer"
+        case .invalidValue: "Invalid value"
         }
     }
 }
