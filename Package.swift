@@ -10,7 +10,8 @@ let package = Package(
         .library(
             name: "SwiftBorsh",
             targets: ["SwiftBorsh"]
-        )
+        ),
+        .library(name: "Base58", targets: ["Base58"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0")

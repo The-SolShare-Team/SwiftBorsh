@@ -29,17 +29,58 @@ public struct BorshEncodableMacro: ExtensionMacro {
             do {
                 var body: [String] = []
 
+                // Loop through each member (var)
                 for member in structDecl.memberBlock.members {
                     guard let varDecl = member.decl.as(VariableDeclSyntax.self) else { continue }
 
-                    for binding in varDecl.bindings {
-                        guard let identifier = binding.pattern.as(IdentifierPatternSyntax.self)
-                        else {
-                            continue
+                    // Loop through each binding in the member in reverse to get the type first (e.g. var a, b, c: Int)
+                    var currentTypeAnnotation: TypeAnnotationSyntax?
+                    var memberSubBody: [String] = []  // Needed for correct ordering of bindings
+                    for binding in varDecl.bindings.reversed() {
+                        currentTypeAnnotation = binding.typeAnnotation ?? currentTypeAnnotation  // Keep the last type annotation if there is none for the current binding
+
+                        // Build identifierTypePairs array.
+                        // For regular identifiers, the array will only contain 1 element.
+                        // For tuple identifiers, it may contain more.
+                        var identifierTypePairs = [
+                            (IdentifierPatternSyntax, TypeSyntax)
+                        ]()
+                        if let identifier = binding.pattern.as(IdentifierPatternSyntax.self) {
+                            // For regular identifier
+                            identifierTypePairs.append((identifier, currentTypeAnnotation!.type))
+                        } else if let tupleIdentifier = binding.pattern.as(TuplePatternSyntax.self),
+                            let tupleType = currentTypeAnnotation!.type.as(TupleTypeSyntax.self)
+                        {
+                            // For tuple identifier
+                            for (identifier, annotation) in zip(
+                                tupleIdentifier.elements, tupleType.elements
+                            ).reversed() {
+                                identifierTypePairs.append(
+                                    (
+                                        identifier.pattern.as(IdentifierPatternSyntax.self)!,
+                                        annotation.type
+                                    ))
+                            }
                         }
 
-                        body.append("try \(identifier.identifier).borshEncode(to: &buffer)")
+                        // Generate code
+                        for (identifier, annotation) in identifierTypePairs {
+                            if let tupleType = annotation.as(TupleTypeSyntax.self) {
+                                // For tuple type
+                                for i in (0..<tupleType.elements.count).reversed() {
+                                    memberSubBody.append(
+                                        "try \(identifier.identifier).\(i).borshEncode(to: &buffer)"
+                                    )
+                                }
+                            } else {
+                                // For other types
+                                memberSubBody.append(
+                                    "try \(identifier.identifier).borshEncode(to: &buffer)")
+                            }
+                        }
+
                     }
+                    body = body + memberSubBody.reversed()
                 }
 
                 return [
@@ -67,8 +108,6 @@ public struct BorshEncodableMacro: ExtensionMacro {
                     for element in caseDecl.elements {
                         if let parameterClause = element.parameterClause {
                             // If the case has parameters, generate the code as follows
-                            // let parameters = (1...parameterClause.parameters.count).map { "p\($0)" }
-
                             var j = 0
                             let parameters = parameterClause.parameters.map {
                                 if let tupleType = $0.type.as(TupleTypeSyntax.self) {
