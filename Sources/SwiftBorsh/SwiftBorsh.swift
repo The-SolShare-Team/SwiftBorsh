@@ -11,6 +11,13 @@ public macro BorshEncodable() =
 public macro BorshDecodable() =
     #externalMacro(module: "SwiftBorshMacros", type: "BorshDecodableMacro")
 
+@attached(
+    extension, conformances: BorshEncodable, BorshDecodable,
+    names: named(borshEncode(to:)),
+    named(init(fromBorshBuffer:)))
+public macro BorshCodable() =
+    #externalMacro(module: "SwiftBorshMacros", type: "BorshCodableMacro")
+
 public enum BorshEncoder {
     public static func encode(_ value: any BorshEncodable) throws(BorshEncodingError) -> [UInt8] {
         var buffer = ByteBuffer()

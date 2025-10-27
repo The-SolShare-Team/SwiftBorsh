@@ -8,5 +8,6 @@ struct SwiftBorshPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         BorshEncodableMacro.self,
         BorshDecodableMacro.self,
+        BorshCodableMacro.self,
     ]
 }
