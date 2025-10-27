@@ -1,68 +1,11 @@
 import SwiftBorsh
 
+@BorshEncodable
 enum MyEnum {
     case A, B
     case C(test: Int32, test2: Int64, test3: (Int64, Int64))
     case D(Int32, test: Int64, (Int64, Int64), Float32, test3: (String, String, String))
 }
-
-extension MyEnum: BorshEncodable {
-    public func borshEncode(to buffer: inout BorshByteBuffer) throws(BorshEncodingError) {
-        switch self {
-        case .A:
-            try UInt8(0).borshEncode(to: &buffer)
-        case .B:
-            try UInt8(1).borshEncode(to: &buffer)
-        case .C(let p1, let p2, let (p3, p4)):
-            do {
-                try UInt8(2).borshEncode(to: &buffer)
-                try p1.borshEncode(to: &buffer)
-                try p2.borshEncode(to: &buffer)
-                try p3.borshEncode(to: &buffer)
-                try p4.borshEncode(to: &buffer)
-            }
-        case .D(let p1, let p2, let (p3, p4), let p5, let (p6, p7, p8)):
-            do {
-                try UInt8(3).borshEncode(to: &buffer)
-                try p1.borshEncode(to: &buffer)
-                try p2.borshEncode(to: &buffer)
-                try p3.borshEncode(to: &buffer)
-                try p4.borshEncode(to: &buffer)
-                try p5.borshEncode(to: &buffer)
-                try p6.borshEncode(to: &buffer)
-                try p7.borshEncode(to: &buffer)
-                try p8.borshEncode(to: &buffer)
-            }
-        }
-    }
-}
-
-// extension MyEnum: BorshEncodable {
-//     public func borshEncode(to buffer: inout BorshByteBuffer) throws(BorshEncodingError) {
-//         switch self {
-//         case .A:
-//             try UInt8(0).borshEncode(to: &buffer)
-//         case .B:
-//             try UInt8(1).borshEncode(to: &buffer)
-//         case .C(let p1, let p2, let (p3, p4)):
-//             do {
-//                 try UInt8(2).borshEncode(to: &buffer)
-//                 try p1.borshEncode(to: &buffer)
-//                 try p2.borshEncode(to: &buffer)
-//                 try p3.borshEncode(to: &buffer)
-//                 try p4.borshEncode(to: &buffer)
-//             }
-//         case .D(let p1, let p2, let (p3, p4)):
-//             do {
-//                 try UInt8(3).borshEncode(to: &buffer)
-//                 try p1.borshEncode(to: &buffer)
-//                 try p2.borshEncode(to: &buffer)
-//                 try p3.borshEncode(to: &buffer)
-//                 try p4.borshEncode(to: &buffer)
-//             }
-//         }
-//     }
-// }
 
 // extension MyEnum: BorshDecodable {
 //     init(fromBorshBuffer buffer: inout SwiftBorsh.BorshByteBuffer) throws(SwiftBorsh
@@ -90,19 +33,19 @@ extension MyEnum: BorshEncodable {
 
 // var a: MyEnum
 
-// @BorshEncodable
-// @BorshDecodable
+@BorshEncodable
 struct Person {
     var name, name2: String
-    // var (x, y): (Int, Int)
-    // var position: (Int, Int)
+    var (x, y): (Int64, (Int64, String))
+    var position, position2: (Int32, Int32), position3: String
     var age: Int32
     let score: Float
-    // let kind: MyEnum
+    let kind: MyEnum
 }
 
 // Handle tuple declaration, tuple types
 // Handle decoding
+// Diagnostics field conformance to encodable
 
 print(try! BorshEncoder.encode("Hello World"))
 print(

@@ -13,7 +13,7 @@ public enum Base58 {
     @usableFromInline
     static let encodingTable = Array("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
-    // Based on https://pub.dev/documentation/extension_data/latest/codec/base58Encode.html?utm_source=chatgpt.com
+    // Based on https://pub.dev/documentation/extension_data/latest/codec/base58Encode.html
     public static func encode(_ input: [UInt8]) -> String {
         guard !input.isEmpty else { return "" }
 
@@ -37,7 +37,7 @@ public enum Base58 {
             length = i
         }
 
-        encoded.reserveCapacity(zeroes + length)
+        encoded.reserveCapacity(length)
         for digit in buffer.prefix(length).reversed() {
             encoded.append(encodingTable[Int(digit)])
         }
@@ -74,6 +74,7 @@ public enum Base58 {
             length = i
         }
 
+        decoded.reserveCapacity(length)
         decoded.append(contentsOf: buffer.prefix(length).reversed())
 
         return decoded
