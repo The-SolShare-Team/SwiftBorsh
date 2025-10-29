@@ -25,3 +25,17 @@ import Testing
     let output = try! Base58.decode(input)
     #expect(output == Array("The quick brown fox jumps over the lazy dog.".utf8))
 }
+
+@Test func encodeEmpty() {
+    let input: [UInt8] = []
+    let output = Base58.encode(input)
+    #expect(output == "")
+}
+
+@Test func testDecodeInvalidCharacter() {
+    let invalidInput = "0OIl" // invalid Base58 characters
+
+    #expect(throws: Base58DecodingError.invalidCharacter("0")) {
+        _ = try Base58.decode(invalidInput)
+    }
+}
