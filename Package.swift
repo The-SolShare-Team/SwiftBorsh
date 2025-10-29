@@ -37,6 +37,5 @@ let package = Package(
             name: "SwiftBorshTests",
             dependencies: ["SwiftBorsh"]
         ),
-        .executableTarget(name: "Client", dependencies: ["SwiftBorsh"]),
     ]
 )

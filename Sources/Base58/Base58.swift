@@ -10,7 +10,6 @@ public enum Base58DecodingError: Error, CustomStringConvertible {
 }
 
 public enum Base58 {
-    @usableFromInline
     static let encodingTable = Array("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
     // Based on https://pub.dev/documentation/extension_data/latest/codec/base58Encode.html
