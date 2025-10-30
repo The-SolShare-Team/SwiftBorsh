@@ -22,11 +22,10 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ]
-        ),
+            ]),
         .target(
-            name: "ByteBuffer"
-        ),
+            name: "ByteBuffer",
+            exclude: ["LICENSE.txt"]),
         .target(name: "Base58"),
         .testTarget(name: "Base58Tests", dependencies: ["Base58"]),
         .target(
