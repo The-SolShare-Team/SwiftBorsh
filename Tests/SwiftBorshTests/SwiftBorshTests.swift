@@ -10,6 +10,27 @@ struct Person: Equatable {
 }
 
 @BorshCodable
+struct PersonTwo: Equatable {
+    let id: String
+    let assignee: String
+    let project_id: String
+    let name: String
+    let description: String
+    let status: String
+}
+
+@BorshCodable
+struct TypedStruct: Equatable {
+    let name: String
+    let age: UInt8
+    let flag: Bool
+    let scores: [Float]
+    let optionalNote: String?
+    let tags: [String]
+    let attributes: [String: Int32]
+}
+
+@BorshCodable
 enum MyEnum: Equatable {
     case A, B
     case C(test: Int32, test2: Int64, test3: (Int64, Int64))
@@ -95,4 +116,127 @@ struct WeirdPerson: Equatable {
                 name: "Samuel", name2: "Martineau", x: 1, y: (2, "Boucher"), position: (3, 4),
                 position2: (5, 6), position3: "Dan", age: 42, score: 0.5,
                 kind: .D(13, test: 14, (15, 16), 0.7, test3: ("A", "B", "C"))))
+}
+
+@Test func decodePersonTwo() {
+    let encodedPersonTwo = "9bZQRpENKBeHiJ7Hu6x3K7kZcEAXNCGhbb7W5siuzMyFZ5FeEmV2th7tLrrKM7Cb1FDHPUegqZu6ZTPf7A61tLKJCQU"
+    #expect(
+        try! BorshDecoder.base58Decode(encodedPersonTwo, into: PersonTwo.self)
+            == PersonTwo(
+                id: "APPLE",
+                assignee: "Sai",
+                project_id: "ABX",
+                name: "Hello",
+                description: "Sample task Example",
+                status: "NOT DONE"
+            )
+    )
+}
+
+@Test func encodePersonTwo() {
+    let personTwo = PersonTwo(
+        id: "APPLE",
+        assignee: "Sai",
+        project_id: "ABX",
+        name: "Hello",
+        description: "Sample task Example",
+        status: "NOT DONE"
+    )
+    #expect(
+        try! BorshEncoder.base58Encode(personTwo)
+            == "9bZQRpENKBeHiJ7Hu6x3K7kZcEAXNCGhbb7W5siuzMyFZ5FeEmV2th7tLrrKM7Cb1FDHPUegqZu6ZTPf7A61tLKJCQU"
+    )
+}
+
+@Test func encodeTypedStructToBytes() {
+    let value = TypedStruct(
+        name: "Alice",
+        age: 30,
+        flag: true,
+        scores: [1.0, 2.0],
+        optionalNote: "Hello World",
+        tags: ["swift", "borsh"],
+        attributes: ["speed": 100, "skill": 42]
+    )
+
+    let expectedEncoded: [UInt8] = [5, 0, 0, 0, 65, 108, 105, 99, 101, 
+    30, 1, 2, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 1, 11, 0, 0, 0, 72, 
+    101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 2, 0, 0, 0, 5, 0, 
+    0, 0, 115, 119, 105, 102, 116, 5, 0, 0, 0, 98, 111, 114, 115, 104, 2, 
+    0, 0, 0, 5, 0, 0, 0, 115, 107, 105, 108, 108, 42, 0, 0, 0, 5, 0, 0, 0, 
+    115, 112, 101, 101, 100, 100, 0, 0, 0]
+    let encoded = try! BorshEncoder.encode(value)
+    #expect(encoded == expectedEncoded)
+}
+
+@Test func decodeTypedStructFromBytes() {
+
+    let expected = TypedStruct(
+        name: "Alice",
+        age: 30,
+        flag: true,
+        scores: [1.0, 2.0],
+        optionalNote: "Hello World",
+        tags: ["swift", "borsh"],
+        attributes: ["speed": 100, "skill": 42]
+    )
+
+    #expect(try! BorshDecoder.decode([5, 0, 0, 0, 65, 108, 105, 99, 101, 
+    30, 1, 2, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 1, 11, 0, 0, 0, 72, 
+    101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 2, 0, 0, 0, 5, 0, 
+    0, 0, 115, 119, 105, 102, 116, 5, 0, 0, 0, 98, 111, 114, 115, 104, 2, 
+    0, 0, 0, 5, 0, 0, 0, 115, 107, 105, 108, 108, 42, 0, 0, 0, 5, 0, 0, 0, 
+    115, 112, 101, 101, 100, 100, 0, 0, 0], into: TypedStruct.self) == expected)
+}
+
+@Test func testTypedStructEncodeAndDecode() {
+    let original = TypedStruct(
+        name: "Alice",
+        age: 30,
+        flag: true,
+        scores: [1.0, 2.0],
+        optionalNote: "Hello World",
+        tags: ["swift", "borsh"],
+        attributes: ["speed": 100, "skill": 42],
+    )
+
+    var buffer = BorshByteBuffer()
+    try! original.borshEncode(to: &buffer)
+    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+    #expect(decoded == original)
+}
+
+@Test func testTypedStructOptionalNil() {
+    let original = TypedStruct(
+        name: "Bob",
+        age: 25,
+        flag: false,
+        scores: [],
+        optionalNote: nil,
+        tags: [],
+        attributes: [:],
+    )
+
+    var buffer = BorshByteBuffer()
+    try! original.borshEncode(to: &buffer)
+    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+    #expect(decoded == original)
+}
+
+
+@Test func testTypedStructEmptyCollections() {
+    let original = TypedStruct(
+        name: "Empty",
+        age: 0,
+        flag: false,
+        scores: [],
+        optionalNote: nil,
+        tags: [],
+        attributes: [:],
+    )
+
+    var buffer = BorshByteBuffer()
+    try! original.borshEncode(to: &buffer)
+    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+    #expect(decoded == original)
 }
