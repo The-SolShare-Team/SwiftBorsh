@@ -1,4 +1,4 @@
-public enum Base58DecodingError: Error, CustomStringConvertible {
+public enum Base58DecodingError: Error, CustomStringConvertible, Equatable {
     case invalidCharacter(Character)
 
     public var description: String {
