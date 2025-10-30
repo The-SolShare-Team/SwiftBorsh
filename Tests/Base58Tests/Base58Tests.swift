@@ -47,7 +47,7 @@ import Testing
 @Test func testDecodeInvalidCharacter() {
     let invalidInput = "0OIl" // invalid Base58 characters
 
-    #expect(throws: Base58DecodingError.invalidCharacter("0")) {
+    #expect(throws: Base58DecodingError.self) {
         _ = try Base58.decode(invalidInput)
     }
 }

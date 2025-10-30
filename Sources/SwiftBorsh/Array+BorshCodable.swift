@@ -12,8 +12,8 @@ extension Array: BorshDecodable where Element: BorshDecodable {
         let count = Int(try UInt32(fromBorshBuffer: &buffer))
         self.init()
         self.reserveCapacity(count)
-        for i in 0..<count {
-            self[i] = try Element(fromBorshBuffer: &buffer)
+        for _ in 0..<count {
+            self.append(try Element(fromBorshBuffer: &buffer))
         }
     }
 }

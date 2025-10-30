@@ -181,12 +181,14 @@ struct WeirdPerson: Equatable {
         attributes: ["speed": 100, "skill": 42]
     )
 
-    #expect(try! BorshDecoder.decode([5, 0, 0, 0, 65, 108, 105, 99, 101, 
+    let decoded = try! BorshDecoder.decode([5, 0, 0, 0, 65, 108, 105, 99, 101, 
     30, 1, 2, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 1, 11, 0, 0, 0, 72, 
     101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 2, 0, 0, 0, 5, 0, 
     0, 0, 115, 119, 105, 102, 116, 5, 0, 0, 0, 98, 111, 114, 115, 104, 2, 
     0, 0, 0, 5, 0, 0, 0, 115, 107, 105, 108, 108, 42, 0, 0, 0, 5, 0, 0, 0, 
-    115, 112, 101, 101, 100, 100, 0, 0, 0], into: TypedStruct.self) == expected)
+    115, 112, 101, 101, 100, 100, 0, 0, 0], into: TypedStruct.self)
+
+    #expect(decoded == expected)
 }
 
 @Test func testTypedStructEncodeAndDecode() {
