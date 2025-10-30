@@ -34,9 +34,9 @@ public enum BorshEncoder {
 }
 
 public enum BorshDecoder {
-    public static func decode<T: BorshDecodable>(_ data: [UInt8], into: T.Type)
+    public static func decode<T: BorshDecodable, Bytes: Sequence>(_ data: Bytes, into: T.Type)
         throws(BorshDecodingError)
-        -> T
+        -> T where Bytes.Element == UInt8
     {
         var buffer = ByteBuffer(bytes: data)
         return try T.init(fromBorshBuffer: &buffer)
