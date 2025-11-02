@@ -10,8 +10,7 @@ let package = Package(
         .library(
             name: "SwiftBorsh",
             targets: ["SwiftBorsh"]
-        ),
-        .library(name: "Base58", targets: ["Base58"]),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0")
@@ -26,11 +25,9 @@ let package = Package(
         .target(
             name: "ByteBuffer",
             exclude: ["LICENSE.txt"]),
-        .target(name: "Base58"),
-        .testTarget(name: "Base58Tests", dependencies: ["Base58"]),
         .target(
             name: "SwiftBorsh",
-            dependencies: ["ByteBuffer", "SwiftBorshMacros", "Base58"]
+            dependencies: ["ByteBuffer", "SwiftBorshMacros"]
         ),
         .testTarget(
             name: "SwiftBorshTests",
