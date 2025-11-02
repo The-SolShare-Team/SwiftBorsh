@@ -26,8 +26,6 @@ let package = Package(
         .target(
             name: "ByteBuffer",
             exclude: ["LICENSE.txt"]),
-        .target(name: "Base58"),
-        .testTarget(name: "Base58Tests", dependencies: ["Base58"]),
         .target(
             name: "SwiftBorsh",
             dependencies: ["ByteBuffer", "SwiftBorshMacros", "Base58"]

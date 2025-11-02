@@ -24,13 +24,6 @@ public enum BorshEncoder {
         try value.borshEncode(to: &buffer)
         return buffer.readBytes(length: buffer.readableBytes) ?? []
     }
-
-    public static func base58Encode(_ value: any BorshEncodable) throws
-        -> String
-    {
-        let bytes = try encode(value)
-        return Base58.encode(bytes)
-    }
 }
 
 public enum BorshDecoder {
@@ -40,12 +33,5 @@ public enum BorshDecoder {
     {
         var buffer = ByteBuffer(bytes: data)
         return try T.init(fromBorshBuffer: &buffer)
-    }
-
-    public static func base58Decode<T: BorshDecodable>(_ data: String, into: T.Type)
-        throws -> T
-    {
-        let bytes = try Base58.decode(data)
-        return try decode(bytes, into: T.self)
     }
 }

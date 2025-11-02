@@ -124,10 +124,14 @@ enum TestError: Error, Equatable {
 }
 
 @Test func decodePersonTwo() {
-    let encodedPersonTwo =
-        "9bZQRpENKBeHiJ7Hu6x3K7kZcEAXNCGhbb7W5siuzMyFZ5FeEmV2th7tLrrKM7Cb1FDHPUegqZu6ZTPf7A61tLKJCQU"
+    let encodedPersonTwo: [UInt8] =
+        [
+            5, 0, 0, 0, 65, 80, 80, 76, 69, 3, 0, 0, 0, 83, 97, 105, 3, 0, 0, 0, 65, 66, 88, 5, 0,
+            0, 0, 72, 101, 108, 108, 111, 19, 0, 0, 0, 83, 97, 109, 112, 108, 101, 32, 116, 97, 115,
+            107, 32, 69, 120, 97, 109, 112, 108, 101, 8, 0, 0, 0, 78, 79, 84, 32, 68, 79, 78, 69,
+        ]
     #expect(
-        try! BorshDecoder.base58Decode(encodedPersonTwo, into: PersonTwo.self)
+        try! BorshDecoder.decode(encodedPersonTwo, into: PersonTwo.self)
             == PersonTwo(
                 id: "APPLE",
                 assignee: "Sai",
@@ -148,9 +152,15 @@ enum TestError: Error, Equatable {
         description: "Sample task Example",
         status: "NOT DONE"
     )
+
     #expect(
-        try! BorshEncoder.base58Encode(personTwo)
-            == "9bZQRpENKBeHiJ7Hu6x3K7kZcEAXNCGhbb7W5siuzMyFZ5FeEmV2th7tLrrKM7Cb1FDHPUegqZu6ZTPf7A61tLKJCQU"
+        try! BorshEncoder.encode(personTwo)
+            == [
+                5, 0, 0, 0, 65, 80, 80, 76, 69, 3, 0, 0, 0, 83, 97, 105, 3, 0, 0, 0, 65, 66, 88, 5,
+                0, 0, 0, 72, 101, 108, 108, 111, 19, 0, 0, 0, 83, 97, 109, 112, 108, 101, 32, 116,
+                97, 115, 107, 32, 69, 120, 97, 109, 112, 108, 101, 8, 0, 0, 0, 78, 79, 84, 32, 68,
+                79, 78, 69,
+            ]
     )
 }
 
