@@ -1,0 +1,51 @@
+name: Swift Tests & Coverage
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Tests with Coverage
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build
+      run: swift build -v
+
+    - name: Run tests with coverage
+      run: swift test --enable-code-coverage
+
+    - name: Generate coverage report
+      run: |
+        xcrun llvm-cov export -format="lcov" \
+          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+
+    - name: Display coverage summary
+      run: |
+        xcrun llvm-cov report \
+          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata
+
+    - name: Generate markdown coverage report
+      run: |
+        echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        xcrun llvm-cov report \
+          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Coverage Details" >> $GITHUB_STEP_SUMMARY
+        echo "Download the full LCOV report from the artifacts section below." >> $GITHUB_STEP_SUMMARY
+
+    - name: Archive coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage.lcov
