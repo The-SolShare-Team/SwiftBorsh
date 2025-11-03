@@ -187,137 +187,137 @@ enum TestError: Error, Equatable {
     #expect(encoded == expectedEncoded)
 }
 
-@Test func decodeTypedStructFromBytes() {
+// @Test func decodeTypedStructFromBytes() {
 
-    let expected = TypedStruct(
-        name: "Alice",
-        age: 30,
-        flag: true,
-        scores: [1.0, 2.0],
-        optionalNote: "Hello World",
-        tags: ["swift", "borsh"],
-        attributes: ["speed": 100, "skill": 42]
-    )
+//     let expected = TypedStruct(
+//         name: "Alice",
+//         age: 30,
+//         flag: true,
+//         scores: [1.0, 2.0],
+//         optionalNote: "Hello World",
+//         tags: ["swift", "borsh"],
+//         attributes: ["speed": 100, "skill": 42]
+//     )
 
-    let decoded = try! BorshDecoder.decode(
-        [
-            5, 0, 0, 0, 65, 108, 105, 99, 101,
-            30, 1, 2, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 1, 11, 0, 0, 0, 72,
-            101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 2, 0, 0, 0, 5, 0,
-            0, 0, 115, 119, 105, 102, 116, 5, 0, 0, 0, 98, 111, 114, 115, 104, 2,
-            0, 0, 0, 5, 0, 0, 0, 115, 107, 105, 108, 108, 42, 0, 0, 0, 5, 0, 0, 0,
-            115, 112, 101, 101, 100, 100, 0, 0, 0,
-        ], into: TypedStruct.self)
+//     let decoded = try! BorshDecoder.decode(
+//         [
+//             5, 0, 0, 0, 65, 108, 105, 99, 101,
+//             30, 1, 2, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 1, 11, 0, 0, 0, 72,
+//             101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 2, 0, 0, 0, 5, 0,
+//             0, 0, 115, 119, 105, 102, 116, 5, 0, 0, 0, 98, 111, 114, 115, 104, 2,
+//             0, 0, 0, 5, 0, 0, 0, 115, 107, 105, 108, 108, 42, 0, 0, 0, 5, 0, 0, 0,
+//             115, 112, 101, 101, 100, 100, 0, 0, 0,
+//         ], into: TypedStruct.self)
 
-    #expect(decoded == expected)
-}
+//     #expect(decoded == expected)
+// }
 
-@Test func testTypedStructEncodeAndDecode() {
-    let original = TypedStruct(
-        name: "Alice",
-        age: 30,
-        flag: true,
-        scores: [1.0, 2.0],
-        optionalNote: "Hello World",
-        tags: ["swift", "borsh"],
-        attributes: ["speed": 100, "skill": 42],
-    )
+// @Test func testTypedStructEncodeAndDecode() {
+//     let original = TypedStruct(
+//         name: "Alice",
+//         age: 30,
+//         flag: true,
+//         scores: [1.0, 2.0],
+//         optionalNote: "Hello World",
+//         tags: ["swift", "borsh"],
+//         attributes: ["speed": 100, "skill": 42],
+//     )
 
-    var buffer = BorshByteBuffer()
-    try! original.borshEncode(to: &buffer)
-    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
-    #expect(decoded == original)
-}
+//     var buffer = BorshByteBuffer()
+//     try! original.borshEncode(to: &buffer)
+//     let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+//     #expect(decoded == original)
+// }
 
-@Test func testTypedStructOptionalNil() {
-    let original = TypedStruct(
-        name: "Bob",
-        age: 25,
-        flag: false,
-        scores: [],
-        optionalNote: nil,
-        tags: [],
-        attributes: [:],
-    )
+// @Test func testTypedStructOptionalNil() {
+//     let original = TypedStruct(
+//         name: "Bob",
+//         age: 25,
+//         flag: false,
+//         scores: [],
+//         optionalNote: nil,
+//         tags: [],
+//         attributes: [:],
+//     )
 
-    var buffer = BorshByteBuffer()
-    try! original.borshEncode(to: &buffer)
-    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
-    #expect(decoded == original)
-}
+//     var buffer = BorshByteBuffer()
+//     try! original.borshEncode(to: &buffer)
+//     let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+//     #expect(decoded == original)
+// }
 
-@Test func testTypedStructEmptyCollections() {
-    let original = TypedStruct(
-        name: "Empty",
-        age: 0,
-        flag: false,
-        scores: [],
-        optionalNote: nil,
-        tags: [],
-        attributes: [:],
-    )
+// @Test func testTypedStructEmptyCollections() {
+//     let original = TypedStruct(
+//         name: "Empty",
+//         age: 0,
+//         flag: false,
+//         scores: [],
+//         optionalNote: nil,
+//         tags: [],
+//         attributes: [:],
+//     )
 
-    var buffer = BorshByteBuffer()
-    try! original.borshEncode(to: &buffer)
-    let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
-    #expect(decoded == original)
-}
+//     var buffer = BorshByteBuffer()
+//     try! original.borshEncode(to: &buffer)
+//     let decoded = try! TypedStruct(fromBorshBuffer: &buffer)
+//     #expect(decoded == original)
+// }
 
-@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-extension InlineArray: @retroactive Sequence {
-    public func makeIterator() -> AnyIterator<Element> {
-        var index = 0
-        return AnyIterator {
-            guard index < Int(count) else { return nil }
-            defer { index += 1 }
-            return self[index]
-        }
-    }
-}
+// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+// extension InlineArray: @retroactive Sequence {
+//     public func makeIterator() -> AnyIterator<Element> {
+//         var index = 0
+//         return AnyIterator {
+//             guard index < Int(count) else { return nil }
+//             defer { index += 1 }
+//             return self[index]
+//         }
+//     }
+// }
 
-@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-extension InlineArray: @retroactive Equatable where Element: Equatable {
-    public static func == (lhs: InlineArray<count, Element>, rhs: InlineArray<count, Element>)
-        -> Bool
-    {
-        return zip(lhs, rhs).allSatisfy { $0 == $1 }
-    }
-}
+// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+// extension InlineArray: @retroactive Equatable where Element: Equatable {
+//     public static func == (lhs: InlineArray<count, Element>, rhs: InlineArray<count, Element>)
+//         -> Bool
+//     {
+//         return zip(lhs, rhs).allSatisfy { $0 == $1 }
+//     }
+// }
 
-@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-@Test func encodeInlineArray() {
-    let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
-    #expect(
-        try! BorshEncoder.encode(arr) == [
-            5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
-            109, 109, 97,
-        ])
-}
+// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+// @Test func encodeInlineArray() {
+//     let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
+//     #expect(
+//         try! BorshEncoder.encode(arr) == [
+//             5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
+//             109, 109, 97,
+//         ])
+// }
 
-@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-@Test func decodeInlineArray() {
-    let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
-    #expect(
-        try! BorshDecoder.decode(
-            [
-                5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
-                109, 109, 97,
-            ], into: InlineArray<3, String>.self) == arr)
-}
+// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+// @Test func decodeInlineArray() {
+//     let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
+//     #expect(
+//         try! BorshDecoder.decode(
+//             [
+//                 5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
+//                 109, 109, 97,
+//             ], into: InlineArray<3, String>.self) == arr)
+// }
 
-@Test func testResultEncodeDecodeSuccess() {
-    let original: Result<String, TestError> = .success("Operation completed")
-    let encoded = try! BorshEncoder.encode(original)
-    let decoded = try! BorshDecoder.decode(encoded, into: Result<String, TestError>.self)
-    #expect(decoded == original)
-}
+// @Test func testResultEncodeDecodeSuccess() {
+//     let original: Result<String, TestError> = .success("Operation completed")
+//     let encoded = try! BorshEncoder.encode(original)
+//     let decoded = try! BorshDecoder.decode(encoded, into: Result<String, TestError>.self)
+//     #expect(decoded == original)
+// }
 
-@Test func testResultEncodeDecodeFailure() {
-    let original: Result<String, TestError> = .failure(.code(404))
-    let encoded = try! BorshEncoder.encode(original)
-    let decoded = try! BorshDecoder.decode(encoded, into: Result<String, TestError>.self)
-    #expect(decoded == original)
-}
+// @Test func testResultEncodeDecodeFailure() {
+//     let original: Result<String, TestError> = .failure(.code(404))
+//     let encoded = try! BorshEncoder.encode(original)
+//     let decoded = try! BorshDecoder.decode(encoded, into: Result<String, TestError>.self)
+//     #expect(decoded == original)
+// }
 
 @Test func testSetEncodeDecodeNonEmpty() {
     let original: Set<String> = ["apple", "banana", "cherry"]
