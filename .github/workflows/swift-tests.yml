@@ -23,16 +23,25 @@ jobs:
 
     - name: Generate coverage report
       run: |
-        LLVM_COV_FLAGS="-instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex='\.build/|Sources/ByteBuffer/' .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
+        BINARY=".build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
+        PROFILE=".build/debug/codecov/default.profdata"
+        IGNORE="\.build/|Sources/ByteBuffer/"
 
         # Generate lcov format
-        xcrun llvm-cov export -format="lcov" $LLVM_COV_FLAGS > coverage.lcov
+        xcrun llvm-cov export \
+          "$BINARY" \
+          -instr-profile="$PROFILE" \
+          -ignore-filename-regex="$IGNORE" \
+          -format="lcov" > coverage.lcov
 
         # Generate markdown summary
         echo "# Code Coverage Report" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        xcrun llvm-cov report $LLVM_COV_FLAGS >> $GITHUB_STEP_SUMMARY
+        xcrun llvm-cov report \
+          "$BINARY" \
+          -instr-profile="$PROFILE" \
+          -ignore-filename-regex="$IGNORE" >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
