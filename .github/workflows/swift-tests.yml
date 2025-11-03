@@ -13,14 +13,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Cache swiftly
+      uses: actions/cache@v4
+      with:
+        path: ~/.swiftly
+        key: ${{ runner.os }}-swiftly-6.2-${{ hashFiles('**/Package.swift') }}
+        restore-keys: |
+          ${{ runner.os }}-swiftly-6.2-
+          ${{ runner.os }}-swiftly-
+
     - name: Setup Swift 6.2
       run: |
-        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg && \
-        installer -pkg swiftly.pkg -target CurrentUserHomeDirectory && \
-        ~/.swiftly/bin/swiftly init --quiet-shell-followup && \
-        . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh" && \
-        hash -r
+        if [ ! -d "$HOME/.swiftly" ]; then
+          curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+          installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+          ~/.swiftly/bin/swiftly init --quiet-shell-followup
+        fi
+        . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
         swiftly install --use latest
+        echo "$HOME/.swiftly/bin" >> $GITHUB_PATH
+        echo "$HOME/.swiftly/env/usr/bin" >> $GITHUB_PATH
         swift --version
 
     - name: Build
