@@ -3,6 +3,8 @@ name: Swift Tests & Coverage
 on:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
   test:
@@ -17,22 +19,20 @@ jobs:
       run: swift build -v
 
     - name: Run tests with coverage
-      run: |
-        export DYLD_LIBRARY_PATH="$HOME/.swiftly/env/usr/lib/swift/macosx:$DYLD_LIBRARY_PATH"
-        swift test --enable-code-coverage
+      run: swift test --enable-code-coverage
 
     - name: Generate coverage report
       run: |
-        LLVM_COV_CMD="xcrun llvm-cov -instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex='\.build/|Sources/ByteBuffer/' .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
+        LLVM_COV_FLAGS="-instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex='\.build/|Sources/ByteBuffer/' .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
 
         # Generate lcov format
-        $LLVM_COV_CMD export -format="lcov" > coverage.lcov
+        xcrun llvm-cov export -format="lcov" $LLVM_COV_FLAGS > coverage.lcov
 
         # Generate markdown summary
         echo "# Code Coverage Report" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        $LLVM_COV_CMD report >> $GITHUB_STEP_SUMMARY
+        xcrun llvm-cov report $LLVM_COV_FLAGS >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
