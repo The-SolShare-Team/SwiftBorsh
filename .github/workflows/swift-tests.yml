@@ -25,7 +25,7 @@ jobs:
       run: |
         BINARY=".build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
         PROFILE=".build/debug/codecov/default.profdata"
-        IGNORE="\.build/|Sources/ByteBuffer/"
+        IGNORE="(\.build/|Tests/|Sources/ByteBuffer/)"
 
         # Generate lcov format
         xcrun llvm-cov export \
