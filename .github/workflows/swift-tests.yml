@@ -13,32 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # - name: Cache swiftly tool
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: |
-    #       ~/.swiftly/bin
-    #       ~/.swiftly/config
-    #     key: ${{ runner.os }}-swiftly-tool
-
-    # - name: Cache Swift 6.2 toolchain
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: ~/.swiftly/toolchains
-    #     key: ${{ runner.os }}-swift-6.2
-
-    # - name: Setup Swift 6.2
-    #   run: |
-    #     if [ ! -d "$HOME/.swiftly" ]; then
-    #       curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
-    #       installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
-    #       ~/.swiftly/bin/swiftly init --quiet-shell-followup
-    #     fi
-    #     . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
-    #     swiftly install --use latest
-    #     echo "$HOME/.swiftly/bin" >> $GITHUB_PATH
-    #     echo "$HOME/.swiftly/env/usr/bin" >> $GITHUB_PATH
-
     - name: Build
       run: swift build -v
 
@@ -49,28 +23,18 @@ jobs:
 
     - name: Generate coverage report
       run: |
-        xcrun llvm-cov export -format="lcov" \
-          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
-          -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+        LLVM_COV_CMD="xcrun llvm-cov -instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex='\.build/|Sources/ByteBuffer/' .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests"
 
-    - name: Display coverage summary
-      run: |
-        xcrun llvm-cov report \
-          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
-          -instr-profile .build/debug/codecov/default.profdata
+        # Generate lcov format
+        $LLVM_COV_CMD export -format="lcov" > coverage.lcov
 
-    - name: Generate markdown coverage report
-      run: |
-        echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+        # Generate markdown summary
+        echo "# Code Coverage Report" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        xcrun llvm-cov report \
-          .build/debug/SwiftBorshPackageTests.xctest/Contents/MacOS/SwiftBorshPackageTests \
-          -instr-profile .build/debug/codecov/default.profdata >> $GITHUB_STEP_SUMMARY
+        $LLVM_COV_CMD report >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Coverage Details" >> $GITHUB_STEP_SUMMARY
-        echo "Download the full LCOV report from the artifacts section below." >> $GITHUB_STEP_SUMMARY
 
     - name: Archive coverage report
       uses: actions/upload-artifact@v4
