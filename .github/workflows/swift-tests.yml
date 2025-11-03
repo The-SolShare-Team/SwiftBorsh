@@ -41,7 +41,8 @@ jobs:
         xcrun llvm-cov report \
           "$BINARY" \
           -instr-profile="$PROFILE" \
-          -ignore-filename-regex="$IGNORE" >> $GITHUB_STEP_SUMMARY
+          -ignore-filename-regex="$IGNORE" \
+          -show-branch-summary=false >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
