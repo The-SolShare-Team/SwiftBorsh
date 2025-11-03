@@ -275,35 +275,35 @@ extension InlineArray: @retroactive Sequence {
     }
 }
 
-// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-// extension InlineArray: @retroactive Equatable where Element: Equatable {
-//     public static func == (lhs: InlineArray<count, Element>, rhs: InlineArray<count, Element>)
-//         -> Bool
-//     {
-//         return zip(lhs, rhs).allSatisfy { $0 == $1 }
-//     }
-// }
+@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+extension InlineArray: @retroactive Equatable where Element: Equatable {
+    public static func == (lhs: InlineArray<count, Element>, rhs: InlineArray<count, Element>)
+        -> Bool
+    {
+        return zip(lhs, rhs).allSatisfy { $0 == $1 }
+    }
+}
 
-// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-// @Test func encodeInlineArray() {
-//     let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
-//     #expect(
-//         try! BorshEncoder.encode(arr) == [
-//             5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
-//             109, 109, 97,
-//         ])
-// }
+@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+@Test func encodeInlineArray() {
+    let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
+    #expect(
+        try! BorshEncoder.encode(arr) == [
+            5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
+            109, 109, 97,
+        ])
+}
 
-// @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-// @Test func decodeInlineArray() {
-//     let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
-//     #expect(
-//         try! BorshDecoder.decode(
-//             [
-//                 5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
-//                 109, 109, 97,
-//             ], into: InlineArray<3, String>.self) == arr)
-// }
+@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
+@Test func decodeInlineArray() {
+    let arr: InlineArray<3, String> = ["Alpha", "Beta", "Gamma"]
+    #expect(
+        try! BorshDecoder.decode(
+            [
+                5, 0, 0, 0, 65, 108, 112, 104, 97, 4, 0, 0, 0, 66, 101, 116, 97, 5, 0, 0, 0, 71, 97,
+                109, 109, 97,
+            ], into: InlineArray<3, String>.self) == arr)
+}
 
 @Test func testResultEncodeDecodeSuccess() {
     let original: Result<String, TestError> = .success("Operation completed")

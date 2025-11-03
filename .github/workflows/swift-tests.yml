@@ -7,37 +7,37 @@ on:
 jobs:
   test:
     name: Run Tests with Coverage
-    runs-on: macos-latest
+    runs-on:  macos-26
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Cache swiftly tool
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.swiftly/bin
-          ~/.swiftly/config
-        key: ${{ runner.os }}-swiftly-tool
+    # - name: Cache swiftly tool
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: |
+    #       ~/.swiftly/bin
+    #       ~/.swiftly/config
+    #     key: ${{ runner.os }}-swiftly-tool
 
-    - name: Cache Swift 6.2 toolchain
-      uses: actions/cache@v4
-      with:
-        path: ~/.swiftly/toolchains
-        key: ${{ runner.os }}-swift-6.2
+    # - name: Cache Swift 6.2 toolchain
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: ~/.swiftly/toolchains
+    #     key: ${{ runner.os }}-swift-6.2
 
-    - name: Setup Swift 6.2
-      run: |
-        if [ ! -d "$HOME/.swiftly" ]; then
-          curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
-          installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
-          ~/.swiftly/bin/swiftly init --quiet-shell-followup
-        fi
-        . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
-        swiftly install --use latest
-        echo "$HOME/.swiftly/bin" >> $GITHUB_PATH
-        echo "$HOME/.swiftly/env/usr/bin" >> $GITHUB_PATH
+    # - name: Setup Swift 6.2
+    #   run: |
+    #     if [ ! -d "$HOME/.swiftly" ]; then
+    #       curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+    #       installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+    #       ~/.swiftly/bin/swiftly init --quiet-shell-followup
+    #     fi
+    #     . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
+    #     swiftly install --use latest
+    #     echo "$HOME/.swiftly/bin" >> $GITHUB_PATH
+    #     echo "$HOME/.swiftly/env/usr/bin" >> $GITHUB_PATH
 
     - name: Build
       run: swift build -v
