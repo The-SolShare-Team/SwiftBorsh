@@ -14,12 +14,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Swift 6.2
-      uses: vapor/swiftly-action@v0.2
-      with:
-        toolchain: latest
+      run: |
+        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg && \
+        installer -pkg swiftly.pkg -target CurrentUserHomeDirectory && \
+        ~/.swiftly/bin/swiftly init --quiet-shell-followup && \
+        . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh" && \
+        hash -r
+        swiftly install --use latest
+        swift --version
 
     - name: Build
-      run: swift build -v
+      run: swift --version && swift build -v
 
     - name: Run tests with coverage
       run: swift test --enable-code-coverage
