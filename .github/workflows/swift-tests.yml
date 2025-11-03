@@ -43,7 +43,9 @@ jobs:
       run: swift build -v
 
     - name: Run tests with coverage
-      run: swift test --enable-code-coverage
+      run: |
+        export DYLD_LIBRARY_PATH="$HOME/.swiftly/env/usr/lib/swift/macosx:$DYLD_LIBRARY_PATH"
+        swift test --enable-code-coverage
 
     - name: Generate coverage report
       run: |
