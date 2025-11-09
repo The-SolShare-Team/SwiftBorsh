@@ -19,7 +19,7 @@ extension Int32: BorshCodable {}
 extension UInt32: BorshCodable {}
 extension Int64: BorshCodable {}
 extension UInt64: BorshCodable {}
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 extension Int128: BorshCodable {}
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 extension UInt128: BorshCodable {}
